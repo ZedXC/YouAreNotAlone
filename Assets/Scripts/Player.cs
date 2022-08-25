@@ -16,15 +16,16 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        MapMaker.makeMap(5,5,0);
     }
 
     // Update is called once per frame
     void Update()
     {
         Vector2 move = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-        if(move.x != 0 || move.y != 0){ moving = true; }
+        moving = (move.x != 0 || move.y != 0);
         rb.AddForce(move * Time.deltaTime * playerSpeed);
-        rb.drag = moving?notMovingDrag:movingDrag;
+        rb.drag = moving?movingDrag:notMovingDrag;
         if(Input.GetKey(KeyCode.Z)){
             flashLight.transform.RotateAround(this.transform.position, Vector3.forward, 180*Time.deltaTime );
         }
