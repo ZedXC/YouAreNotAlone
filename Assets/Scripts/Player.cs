@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     public GameObject flashLight;
     private InputField input;
 
+
     // Start is called before the first frame update
     void Start()
     {
