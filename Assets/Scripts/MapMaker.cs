@@ -8,35 +8,35 @@ public class MapMaker : MonoBehaviour
     private State[,] horEdges;
     private State[,] verEdges;
     private enum State{ closed=0, unset=1, open=2};
+    public int roomSize = 12;
 
-    public static void makeMap(int width, int height, int numMonsters, Player p){
+    public void makeMap(int width, int height, int numMonsters, Player p){
         Room r = new Room();
         r.rotate(270);
         Debug.Log("Rotation = " + r.rotation);
-        MapMaker m = p.gameObject.AddComponent<MapMaker>();
-        m.isMade = new bool[width,height];
-        m.horEdges = new State[width,height+1];
-        m.verEdges = new State[width+1,height];
+        isMade = new bool[width,height];
+        horEdges = new State[width,height+1];
+        verEdges = new State[width+1,height];
         for(int i = 0; i < width; i++) for(int j = 0; j < height+1; j++){
             if(j==0 || j==height){
-                m.horEdges[i,j] = State.closed;
+                horEdges[i,j] = State.closed;
             }else{
-                m.horEdges[i,j] = State.unset;
+                horEdges[i,j] = State.unset;
             }
         }
         for(int i = 0; i < width+1; i++) for(int j = 0; j < height; j++){
             if(i==0 || i==width){
-                m.verEdges[i,j] = State.closed;
+                verEdges[i,j] = State.closed;
             }else{
-                m.verEdges[i,j] = State.unset;
+                verEdges[i,j] = State.unset;
             }
         }
-        m.horEdges[(width-1)/2, 0] = State.open;
+        horEdges[(width-1)/2, 0] = State.open;
         Vector3 botLeft = new Vector3(p.transform.position.x, p.transform.position.y, p.transform.position.z);
         GameObject g = Instantiate(Rooms.Instance.startEnd);
         g.transform.Rotate(new Vector3(0,0,180));
-        g.transform.position = p.transform.position + new Vector3(((width-1)/2)*4,-4,0);
-        p.transform.position = p.transform.position + new Vector3(((width-1)/2)*4,-4,0);
+        g.transform.position = p.transform.position + new Vector3(((width-1)/2)*roomSize,-roomSize,0);
+        p.transform.position = p.transform.position + new Vector3(((width-1)/2)*roomSize,-roomSize,0);
         List<int> openPathXs = new List<int>();
         List<int> openPathYs = new List<int>();
         openPathXs.Add((width-1)/2);
@@ -47,12 +47,12 @@ public class MapMaker : MonoBehaviour
             int y = openPathYs[rand];
             openPathXs.RemoveAt(rand);
             openPathYs.RemoveAt(rand);
-            m.getRandomRoom(x,y,botLeft);
-            m.isMade[x,y] = true;
-            if(x >= 1 && !m.isMade[x-1,y] && m.verEdges[x,y] != State.closed){ openPathXs.Add(x-1); openPathYs.Add(y);}
-            if(x < width-1 && !m.isMade[x+1,y] && m.verEdges[x+1,y] != State.closed){ openPathXs.Add(x+1); openPathYs.Add(y);}
-            if(y >= 1 && !m.isMade[x,y-1] && m.horEdges[x,y] != State.closed){ openPathXs.Add(x); openPathYs.Add(y-1);}
-            if(y < height-1 && !m.isMade[x,y+1] && m.horEdges[x,y+1] != State.closed){ openPathXs.Add(x); openPathYs.Add(y+1);}
+            getRandomRoom(x,y,botLeft);
+            isMade[x,y] = true;
+            if(x >= 1 && !isMade[x-1,y] && verEdges[x,y] != State.closed){ openPathXs.Add(x-1); openPathYs.Add(y);}
+            if(x < width-1 && !isMade[x+1,y] && verEdges[x+1,y] != State.closed){ openPathXs.Add(x+1); openPathYs.Add(y);}
+            if(y >= 1 && !isMade[x,y-1] && horEdges[x,y] != State.closed){ openPathXs.Add(x); openPathYs.Add(y-1);}
+            if(y < height-1 && !isMade[x,y+1] && horEdges[x,y+1] != State.closed){ openPathXs.Add(x); openPathYs.Add(y+1);}
         }
     }
 
@@ -90,7 +90,7 @@ public class MapMaker : MonoBehaviour
                 verEdges[x+1,y] = r.rightOpen()?State.open:State.closed;
                 horEdges[x,y] = r.downOpen()?State.open:State.closed;
                 horEdges[x,y+1] = r.upOpen()?State.open:State.closed;
-                g.transform.position = pos + new Vector3(4*x, 4*y,0);
+                g.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0);
                 return g;
             }
         }
@@ -115,7 +115,7 @@ public class MapMaker : MonoBehaviour
                 verEdges[x+1,y] = r.rightOpen()?State.open:State.closed;
                 horEdges[x,y] = r.downOpen()?State.open:State.closed;
                 horEdges[x,y+1] = r.upOpen()?State.open:State.closed;
-                g.transform.position = pos + new Vector3(4*x, 4*y,0);
+                g.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0);
                 return g;
             }
             return null;
