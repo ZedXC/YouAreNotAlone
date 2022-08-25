@@ -32,11 +32,10 @@ public class MapMaker : MonoBehaviour
             }
         }
         horEdges[(width-1)/2, 0] = State.open;
-        Vector3 botLeft = new Vector3(p.transform.position.x, p.transform.position.y, p.transform.position.z);
+        Vector3 botLeft = new Vector3(p.transform.position.x, p.transform.position.y, p.transform.position.z) - new Vector3(((width-1)/2)*roomSize,-roomSize,0);
         GameObject g = Instantiate(Rooms.Instance.startEnd);
         g.transform.Rotate(new Vector3(0,0,180));
-        g.transform.position = p.transform.position + new Vector3(((width-1)/2)*roomSize,-roomSize,0);
-        p.transform.position = p.transform.position + new Vector3(((width-1)/2)*roomSize,-roomSize,0);
+        g.transform.position = p.transform.position;
         List<int> openPathXs = new List<int>();
         List<int> openPathYs = new List<int>();
         openPathXs.Add((width-1)/2);
