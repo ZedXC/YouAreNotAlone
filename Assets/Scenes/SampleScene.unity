@@ -199,6 +199,7 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
+  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -272,6 +273,24 @@ Transform:
   m_Father: {fileID: 1029170460}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &519420033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f5e228e4019b5e4db2f2c236c7f888d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Tee: {fileID: 8868096894663959549, guid: 0bc3f6049deea0541985de51db348ca4, type: 3}
+  corridor: {fileID: 3217629108282512160, guid: 9d1d00fae5aa2384f84bbfa2847e4fdd, type: 3}
+  rightTurn: {fileID: 2492538411375853241, guid: 534aa7ea8e1cc524680303f47010314c, type: 3}
+  startEnd: {fileID: 3217629108282512160, guid: 77fd920560ad59d4892a478b4ed63333, type: 3}
+  cross: {fileID: 3217629108282512160, guid: 2cb90912b1380754380ef208e347197d, type: 3}
+  deadEnd: {fileID: 5546894339974855860, guid: 0fafffcb675057d41b1b9710e483ac29, type: 3}
 --- !u!1 &604938528
 GameObject:
   m_ObjectHideFlags: 0
@@ -428,7 +447,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 5
   m_Sprite: {fileID: -9014845900175333574, guid: 863364bbaf72ed44684177a50d7f19d4, type: 3}
   m_Color: {r: 0.6698113, g: 0.65496576, b: 0.18009077, a: 1}
   m_FlipX: 0
