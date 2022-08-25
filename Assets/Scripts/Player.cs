@@ -4,26 +4,25 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {   
-    public float moveSpeed = 0.1f;
-
-    //public Animator animator;
+    public float playerSpeed = 5f;
+    public Rigidbody2D rb;
+    private bool moving;
+    public float notMovingDrag = 2f;
+    public float movingDrag = 100f;
+    public GameObject flashLight;
 
     // Start is called before the first frame update
     void Start()
     {
-        
     }
 
     // Update is called once per frame
     void Update()
     {
-        float moveX = Input.GetAxisRaw("Horizontal");
-        float moveY = Input.GetAxisRaw("Vertical");
-
-        //animator.SetFloat("Speed", moveX * moveSpeed);
-        Vector2 moveDirection = new Vector2(moveX, moveY).normalized;
-        Vector2 newPos = new Vector2(gameObject.transform.position.x + moveDirection.x * moveSpeed * Time.deltaTime, gameObject.transform.position.y + moveDirection.y * moveSpeed * Time.deltaTime);
-        this.gameObject.transform.position = newPos;
+        Vector2 move = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        if(move.x != 0 || move.y != 0){ moving = true; }
+        rb.AddForce(move * Time.deltaTime * playerSpeed);
+        rb.drag = moving?notMovingDrag:movingDrag;
     }
 
 
