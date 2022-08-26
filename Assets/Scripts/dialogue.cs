@@ -7,10 +7,10 @@ public class dialogue : MonoBehaviour
 {
     public TextMeshProUGUI textDisplay;
     public GameObject player;
-    public string[,] dialogueOptions = new string[5,4];
+    public string[,] dialogueOptions = new string[6,5];
     private string[] sentences;
     private int index = 0;
-    public int dialoguePath = 8;
+    private int dialoguePath = 3;
     public float typingSpeed = 0.05f;
     public GameObject continueButton;
     public GameObject supportImageOne;
@@ -36,6 +36,7 @@ public class dialogue : MonoBehaviour
     void Update()
     {
         //checks for if the text display has the full sentence before turning on the continue button
+        Debug.Log("Outside limits");
         if (textDisplay.text == dialogueOptions[dialoguePath,index]) {
             continueButton.SetActive(true);
         }
