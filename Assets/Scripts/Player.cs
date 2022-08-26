@@ -17,7 +17,8 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        MapMaker.makeMap(5,5,0);
+        MapMaker m = this.gameObject.AddComponent<MapMaker>();
+        m.makeMap(5,5,0, this);
     }
 
     // Update is called once per frame
