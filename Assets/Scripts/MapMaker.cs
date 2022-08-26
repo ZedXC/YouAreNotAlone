@@ -9,7 +9,24 @@ public class MapMaker : MonoBehaviour
     private State[,] verEdges;
     private enum State{ closed=0, unset=1, open=2};
     public int roomSize = 12;
+    private List<GameObject> furniture;
+    private List<GameObject> placedFurniture;
 
+    void Start(){
+        placedFurniture = new List<GameObject>();
+        furniture = new List<GameObject>();
+        furniture.Add(Furniture.Get.Cabinet);
+        furniture.Add(Furniture.Get.Chair);
+        furniture.Add(Furniture.Get.Couch);
+        furniture.Add(Furniture.Get.Crate);
+        furniture.Add(Furniture.Get.DinnerTable);
+        furniture.Add(Furniture.Get.DogBed);
+        furniture.Add(Furniture.Get.Oven);
+        furniture.Add(Furniture.Get.Plant);
+        furniture.Add(Furniture.Get.Rug);
+        furniture.Add(Furniture.Get.Table);
+        furniture.Add(Furniture.Get.Wardrobe);
+    }
     public void makeMap(int width, int height, int numMonsters, Player p){
         isMade = new bool[width,height];
         horEdges = new State[width,height+1];
@@ -54,45 +71,31 @@ public class MapMaker : MonoBehaviour
 
 //Returns a random room you can enter from below
     public GameObject getRandomRoom(int x, int y, Vector3 pos){ //x and y go from 0 to width-1 or height-1
-        Room r;
-        List<int> rotations;
         List<Room> roomTypes = new List<Room>();
         roomTypes.Add(new corridorRoom(this));
         roomTypes.Add(new rightTurnRoom(this));
         roomTypes.Add(new TRoom(this));
         roomTypes.Add(new crossRoom(this));
         int loop = 0;
+        GameObject g;
         while(true){
             loop++;
             if(loop > 100){ break; }
             int rand = Random.Range(0, roomTypes.Count);
-            r = roomTypes[rand];
-            rotations = new List<int>();
-            for(int i = 0; i < 360; i+=90){
-                r.rotate(i);
-                if((verEdges[x,y] == State.unset || r.leftOpen() == (verEdges[x,y] == State.open))
-                && (verEdges[x+1,y] == State.unset || r.rightOpen() == (verEdges[x+1,y] == State.open))
-                 && (horEdges[x,y] == State.unset || r.downOpen() == (horEdges[x,y] == State.open))
-                 && (horEdges[x,y+1] == State.unset || r.upOpen() == (horEdges[x,y+1] == State.open))){
-                    rotations.Add(i);
-                }
-            }
-            if(rotations.Count != 0){
-                rand = Random.Range(0,rotations.Count);
-                GameObject g = Instantiate(r.prefab);
-                g.transform.Rotate(new Vector3(0,0,-rotations[rand]));
-                r.rotate(rotations[rand]);
-                verEdges[x,y] = r.leftOpen()?State.open:State.closed;
-                verEdges[x+1,y] = r.rightOpen()?State.open:State.closed;
-                horEdges[x,y] = r.downOpen()?State.open:State.closed;
-                horEdges[x,y+1] = r.upOpen()?State.open:State.closed;
-                g.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0);
-                return g;
+            g = makeRoom(x,y,roomTypes[rand],pos);
+            if(g != null){
+            return g;
             }
         }
         //If it can only be a dead end
-        r = new deadEndRoom(this);
-        rotations = new List<int>();
+        Room r = new deadEndRoom(this);
+        g = makeRoom(x,y,r,pos);
+        if(g == null){ Debug.Log("Mapmaking failed");}
+        return g;
+    }
+
+    private GameObject makeRoom(int x, int y, Room r, Vector3 pos){
+            List<int> rotations = new List<int>();
             for(int i = 0; i < 360; i+=90){
                 r.rotate(i);
                 if((verEdges[x,y] == State.unset || r.leftOpen() == (verEdges[x,y] == State.open))
@@ -112,14 +115,39 @@ public class MapMaker : MonoBehaviour
                 horEdges[x,y] = r.downOpen()?State.open:State.closed;
                 horEdges[x,y+1] = r.upOpen()?State.open:State.closed;
                 g.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0);
+                makeFurniture(x,y,r, rotations[rand],pos, g);
                 return g;
+            }else{
+                return null;
             }
-            return null;
+    }
+
+    private void makeFurniture(int x, int y, Room r, int angle, Vector3 pos, GameObject roomObj){
+        r.rotate(angle);
+        GameObject item = Instantiate(furniture[Random.Range(0, furniture.Count)]);
+        placedFurniture.Add(item);
+        item.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0);
+        while(true){
+            item.transform.position = new Vector3(Random.Range(r.minX(), r.maxX()), Random.Range(r.minY(), r.maxY()));
+            item.transform.Rotate(new Vector3(0,0,Random.Range(0,360)));
+            List<Collider> colliders = new List<Collider>();
+            colliders.AddRange(roomObj.GetComponentsInChildren<Collider>());
+            for(int i = 0; i < colliders.Count; i++){
+                Collider col = colliders[i];
+                if(col.bounds.Intersects(item.GetComponent<Renderer>().bounds)){
+                    continue;
+                }
+            }
+        }
     }
 
     class Room{
         protected MapMaker m;
 protected int[] open;
+protected Vector2 botLeft;
+protected Vector2 botRight;
+protected Vector2 topLeft;
+protected Vector2 topRight;
 public GameObject prefab;
  public int rotation = 0;
  public void rotate(int degrees){
@@ -127,6 +155,12 @@ public GameObject prefab;
     degrees = degrees - 360;
     degrees /= 90;
     rotation = -degrees;
+    for(int i = 0; i < rotation; i++){
+        botLeft = new Vector2(-botLeft.y, botLeft.x);
+        botRight = new Vector2(-botRight.y, botRight.x);
+        topLeft = new Vector2(-topLeft.y, topLeft.x);
+        topRight = new Vector2(-topRight.y, topRight.x);
+    }
  }
      public bool leftOpen(){
         return open[(0 + rotation)%4]==1;
@@ -140,41 +174,77 @@ public GameObject prefab;
          public bool downOpen(){
         return open[(3 + rotation)%4]==1;
     }
+    public float minX(){
+        return Mathf.Min(botLeft.x, botRight.x, topLeft.x, topRight.x);
+    }
+    public float maxX(){
+        return Mathf.Max(botLeft.x, botRight.x, topLeft.x, topRight.x);
+    }
+        public float minY(){
+        return Mathf.Min(botLeft.y, botRight.y, topLeft.y, topRight.y);
+    }
+        public float maxY(){
+        return Mathf.Max(botLeft.y, botRight.y, topLeft.y, topRight.y);
+    }
 }
 class TRoom : Room{
     public TRoom(MapMaker m){ 
         this.open = new int[]{1,0,1,1};
         prefab = Rooms.Instance.Tee;
+        botLeft = new Vector2(-2,-1);
+        botRight = new Vector2(2,-1);
+        topLeft = new Vector2(-2,1);
+        topRight = new Vector2(2,1);
     }
 }
 class deadEndRoom : Room{
     public deadEndRoom(MapMaker m){ 
         this.open = new int[]{0,0,0,1};
         prefab = Rooms.Instance.deadEnd;
+        botLeft = new Vector2(-1,-2);
+        botRight = new Vector2(1,-2);
+        topLeft = new Vector2(-1,0);
+        topRight = new Vector2(1,0);
     }
 }
 class rightTurnRoom : Room{
     public rightTurnRoom(MapMaker m){ 
         this.open = new int[]{0,0,1,1};
         prefab = Rooms.Instance.rightTurn;
+        botLeft = new Vector2(-1,-2);
+        botRight = new Vector2(1,-2);
+        topLeft = new Vector2(-1,1);
+        topRight = new Vector2(1,1);
     }
 }
 class corridorRoom : Room{
     public corridorRoom(MapMaker m){ 
         this.open = new int[]{0,1,0,1};
         prefab = Rooms.Instance.corridor;
+        botLeft = new Vector2(-1,-2);
+        botRight = new Vector2(1,-2);
+        topLeft = new Vector2(-1,2);
+        topRight = new Vector2(1,2);
     }
 }
 class crossRoom : Room{
     public crossRoom(MapMaker m){ 
         this.open = new int[]{1,1,1,1};
         prefab = Rooms.Instance.cross;
+        botLeft = new Vector2(-1,-2);
+        botRight = new Vector2(1,-2);
+        topLeft = new Vector2(-1,2);
+        topRight = new Vector2(1,2);
     }
 }
 class startEndRoom : Room{
     public startEndRoom(MapMaker m){ 
         this.open = new int[]{0,0,0,1};
         prefab = Rooms.Instance.startEnd;
+        botLeft = new Vector2(-2,-1);
+        botRight = new Vector2(2,-1);
+        topLeft = new Vector2(-2,2);
+        topRight = new Vector2(2,2);
     }
 }
 
