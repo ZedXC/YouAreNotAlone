@@ -17,4 +17,5 @@ public class Furniture : MonoBehaviour
     public GameObject Rug;
     public GameObject Table;
     public GameObject Wardrobe;
+    public GameObject Enemy;
 }

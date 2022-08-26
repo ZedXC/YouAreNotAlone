@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Illness : MonoBehaviour
 {
-    public GameObject player;
+    public Transform player;
     public float sightLength = 8;
-    public float enemySpeed = 0.5f;
+    public float enemySpeed = 3f;
     private Rigidbody2D rb;
     // Start is called before the first frame update
     void Awake()
@@ -17,8 +17,8 @@ public class Illness : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Vector3.Distance(this.gameObject.transform.position, player.transform.position) < sightLength){
-            Vector3 dir = (player.transform.position - this.gameObject.transform.position).normalized;
+        if(Vector3.Distance(this.gameObject.transform.position, player.position) < sightLength){
+            Vector3 dir = (player.position - this.gameObject.transform.position).normalized;
             rb.velocity = new Vector2(enemySpeed*dir.x, enemySpeed*dir.y);
         }
     }

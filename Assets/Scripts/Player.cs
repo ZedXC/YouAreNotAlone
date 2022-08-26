@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
     void Start()
     {
         MapMaker m = this.gameObject.AddComponent<MapMaker>();
-        m.makeMap(5,5,0, this);
+        m.makeMap(5,5,20, this);
     }
 
     // Update is called once per frame

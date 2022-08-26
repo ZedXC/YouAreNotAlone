@@ -10,10 +10,15 @@ public class MapMaker : MonoBehaviour
     private enum State{ closed=0, unset=1, open=2};
     public int roomSize = 12;
     private List<GameObject> furniture;
-    private List<GameObject> placedFurniture;
+    private List<GameObject> placedObjects;
+    private int numEnemies;
+    private int numEnemiesPlaced = 0;
+    private int width;
+    private int height;
+    private Player p;
 
     void Awake(){
-        placedFurniture = new List<GameObject>();
+        placedObjects = new List<GameObject>();
         furniture = new List<GameObject>();
         furniture.Add(Furniture.Get.Cabinet);
         furniture.Add(Furniture.Get.Chair);
@@ -28,6 +33,11 @@ public class MapMaker : MonoBehaviour
         furniture.Add(Furniture.Get.Wardrobe);
     }
     public void makeMap(int width, int height, int numMonsters, Player p){
+        this.p = p;
+        this.width = width;
+        this.height = height;
+        numEnemies = numMonsters;
+        numEnemiesPlaced = 0;
         isMade = new bool[width,height];
         horEdges = new State[width,height+1];
         verEdges = new State[width+1,height];
@@ -116,6 +126,12 @@ public class MapMaker : MonoBehaviour
                 horEdges[x,y+1] = r.upOpen()?State.open:State.closed;
                 g.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0);
                 makeFurniture(x,y,r, rotations[rand],pos, g);
+                Debug.Log("numenemies = " + numEnemies);
+                Debug.Log("numenemiesplaced = " + numEnemiesPlaced);
+                if(Random.Range(0f, 1f) < (numEnemies - numEnemiesPlaced)*((float)numEnemies/((float)width*height))){
+                    numEnemiesPlaced++;
+                    makeEnemy(x,y,r,rotations[rand],pos,g);
+                }
                 return g;
             }else{
                 return null;
@@ -125,14 +141,38 @@ public class MapMaker : MonoBehaviour
     private void makeFurniture(int x, int y, Room r, int angle, Vector3 pos, GameObject roomObj){
         r.rotate(angle);
         GameObject item = Instantiate(furniture[Random.Range(0, furniture.Count)]);
-        placedFurniture.Add(item);
+        placedObjects.Add(item);
         while(true){
             item.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0) + new Vector3(Random.Range(r.minX(), r.maxX()), Random.Range(r.minY(), r.maxY()));
             item.transform.Rotate(new Vector3(0,0,Random.Range(0,360)));
             List<Collider> colliders = new List<Collider>();
             colliders.AddRange(roomObj.GetComponentsInChildren<Collider>());
-            for(int i = 0; i < placedFurniture.Count; i++){
-                GameObject o = placedFurniture[i];
+            for(int i = 0; i < placedObjects.Count; i++){
+                GameObject o = placedObjects[i];
+                if(o != this){ colliders.AddRange(o.GetComponentsInChildren<Collider>());}
+            }
+            for(int i = 0; i < colliders.Count; i++){
+                Collider col = colliders[i];
+                if(col.bounds.Intersects(item.GetComponent<Renderer>().bounds)){
+                    continue;
+                }
+            }
+            break;
+        }
+    }
+
+    private void makeEnemy(int x, int y, Room r, int angle, Vector3 pos, GameObject roomObj){
+        r.rotate(angle);
+        GameObject item = Instantiate(Furniture.Get.Enemy);
+        item.GetComponent<Illness>().player = p.transform;
+        placedObjects.Add(item);
+        while(true){
+            item.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0) + new Vector3(Random.Range(r.minX(), r.maxX()), Random.Range(r.minY(), r.maxY()));
+            item.transform.Rotate(new Vector3(0,0,Random.Range(0,360)));
+            List<Collider> colliders = new List<Collider>();
+            colliders.AddRange(roomObj.GetComponentsInChildren<Collider>());
+            for(int i = 0; i < placedObjects.Count; i++){
+                GameObject o = placedObjects[i];
                 if(o != this){ colliders.AddRange(o.GetComponentsInChildren<Collider>());}
             }
             for(int i = 0; i < colliders.Count; i++){
