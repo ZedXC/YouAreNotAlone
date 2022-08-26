@@ -19,7 +19,7 @@ public class Illness : MonoBehaviour
     {
         if(Vector3.Distance(this.gameObject.transform.position, player.transform.position) < sightLength){
             Vector3 dir = (player.transform.position - this.gameObject.transform.position).normalized;
-            rb.velocity = new Vector2(enemySpeed, dir);
+            //rb.velocity = new Vector2(enemySpeed, dir);
         }
     }
 }
