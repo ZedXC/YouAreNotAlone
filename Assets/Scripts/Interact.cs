@@ -18,6 +18,10 @@ public class Interact : MonoBehaviour
             {
                 Debug.Log("Detected");
                 anim.SetTrigger("Interacted");
+                Player player = GameObject.Find("Player").GetComponent<Player>();
+                player.talking = true;
+                player.rb.velocity = new Vector2(0,0);
+            
                 GameObject[] enemies = GameObject.FindGameObjectsWithTag("Illness");
                 for (int i = 0; i < enemies.Length; i++)
                 {

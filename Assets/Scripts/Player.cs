@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     public Animator anim;
     private bool isDead = false;
     public int level = 0;
+    public bool talking = false;
 
     // Start is called before the first frame update
     void Start()
@@ -25,8 +26,6 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector2 move = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-        rb.velocity = new Vector2(playerSpeed * move.x, playerSpeed * move.y);
         if (Input.GetKey(KeyCode.Z) || Input.GetKey(KeyCode.J))
         {
             flashLight.transform.RotateAround(
@@ -43,6 +42,9 @@ public class Player : MonoBehaviour
                 -180 * Time.deltaTime
             );
         }
+        if(talking){ return; }
+         Vector2 move = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        rb.velocity = new Vector2(playerSpeed * move.x, playerSpeed * move.y);
     }
 
     public void gameOver()
@@ -73,7 +75,7 @@ public class Player : MonoBehaviour
     public void nextLevel(){
         MapMaker m = this.gameObject.AddComponent<MapMaker>();
         if(level == 0){
-            m.makeMap(3, 1, 0, 3, this);
+            m.makeMap(5, 5, 4, 3, this);
         }else if(level == 1){
              m.makeMap(10, 10, 15, 3, this);
         }else if(level == 2){

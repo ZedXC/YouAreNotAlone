@@ -20,6 +20,7 @@ public class MapMaker : MonoBehaviour
     private GameObject dialogueManager;
     private List<GameObject> objects;
     private List<Interact> NPCs;
+    private Room[,] rooms;
 
     void Awake(){
         objects = new List<GameObject>();
@@ -56,6 +57,7 @@ public class MapMaker : MonoBehaviour
     }
 
     public void makeMap(int width, int height, int numMonsters, int numNPCs, Player p){
+        this.rooms = new Room[width,height];
         this.numNPCs = numNPCs;
         this.p = p;
         this.width = width;
@@ -96,13 +98,16 @@ public class MapMaker : MonoBehaviour
             int y = openPathYs[rand];
             openPathXs.RemoveAt(rand);
             openPathYs.RemoveAt(rand);
+            if(!isMade[x,y]){
             getRandomRoom(x,y,botLeft);
             isMade[x,y] = true;
             if(x >= 1 && !isMade[x-1,y] && verEdges[x,y] != State.closed){ openPathXs.Add(x-1); openPathYs.Add(y);}
             if(x < width-1 && !isMade[x+1,y] && verEdges[x+1,y] != State.closed){ openPathXs.Add(x+1); openPathYs.Add(y);}
             if(y >= 1 && !isMade[x,y-1] && horEdges[x,y] != State.closed){ openPathXs.Add(x); openPathYs.Add(y-1);}
             if(y < height-1 && !isMade[x,y+1] && horEdges[x,y+1] != State.closed){ openPathXs.Add(x); openPathYs.Add(y+1);}
-        } 
+            }
+        }
+         
     }
 
 //Returns a random room you can enter from below
@@ -152,6 +157,7 @@ public class MapMaker : MonoBehaviour
                 horEdges[x,y+1] = r.upOpen()?State.open:State.closed;
                 g.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0);
                 objects.Add(g);
+                rooms[x,y] = r;
                 makeFurniture(x,y,r, rotations[rand],pos, g);
                 if(Random.Range(0f, 1f) < (numEnemies - numEnemiesPlaced)*((float)numEnemies/((float)width*height))){
                     numEnemiesPlaced++;

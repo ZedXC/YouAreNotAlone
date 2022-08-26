@@ -111,6 +111,7 @@ public class dialogue : MonoBehaviour
             supportImageFour.SetActive(false);
             index = 0;
             dialoguePath = -1;
+            GameObject.Find("Player").GetComponent<Player>().talking = false;
         }
     }
 
