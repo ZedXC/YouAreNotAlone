@@ -107,7 +107,19 @@ public class MapMaker : MonoBehaviour
             if(y < height-1 && !isMade[x,y+1] && horEdges[x,y+1] != State.closed){ openPathXs.Add(x); openPathYs.Add(y+1);}
             }
         }
-         
+        //Check if maze is too small, make it again if it is
+        int roomCount = 0;
+        for(int i = 0; i < width; i++) for(int j = 0; j < height; j++){
+            if(isMade[i,j]){ roomCount++;}
+        }
+        if(roomCount < 0.9*width*height){ retry(width, height, numMonsters, numNPCs, p); return; }
+    }
+
+    private void retry(int width, int height, int numMonsters, int numNPCs, Player p){
+        destroyAll();
+        objects = new List<GameObject>();
+        NPCs = new List<Interact>();
+        makeMap(width, height, numMonsters, numNPCs, p);
     }
 
 //Returns a random room you can enter from below
