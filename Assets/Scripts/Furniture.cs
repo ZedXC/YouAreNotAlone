@@ -18,4 +18,5 @@ public class Furniture : MonoBehaviour
     public GameObject Table;
     public GameObject Wardrobe;
     public GameObject Enemy;
+    public GameObject NPC;
 }

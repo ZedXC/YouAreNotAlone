@@ -515,6 +515,7 @@ MonoBehaviour:
   Table: {fileID: 2475313039999476743, guid: fdb10b37a6d538a4d83682503f6e64d1, type: 3}
   Wardrobe: {fileID: 7457164909086831723, guid: 57739f7ed6d783a469c6c2441c37b2c3, type: 3}
   Enemy: {fileID: 991205499061768098, guid: 3d514db6184c0434a9e4f75336292d27, type: 3}
+  NPC: {fileID: 1180072626137162155, guid: e2ecbe5003a34154e96a9197a36e9282, type: 3}
 --- !u!1 &523259087
 GameObject:
   m_ObjectHideFlags: 0

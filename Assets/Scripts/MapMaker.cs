@@ -10,15 +10,18 @@ public class MapMaker : MonoBehaviour
     private enum State{ closed=0, unset=1, open=2};
     public int roomSize = 12;
     private List<GameObject> furniture;
-    private List<GameObject> placedObjects;
     private int numEnemies;
     private int numEnemiesPlaced = 0;
     private int width;
     private int height;
     private Player p;
+    private int numNPCsPlaced;
+    private GameObject dialogueManager;
+    private List<Collider2D> colliders;
 
     void Awake(){
-        placedObjects = new List<GameObject>();
+        List<Collider2D> colliders = new List<Collider2D>();
+        dialogueManager = GameObject.Find("DialogueManager");
         furniture = new List<GameObject>();
         furniture.Add(Furniture.Get.Cabinet);
         furniture.Add(Furniture.Get.Chair);
@@ -38,6 +41,7 @@ public class MapMaker : MonoBehaviour
         this.height = height;
         numEnemies = numMonsters;
         numEnemiesPlaced = 0;
+        numNPCsPlaced = 0;
         isMade = new bool[width,height];
         horEdges = new State[width,height+1];
         verEdges = new State[width+1,height];
@@ -125,12 +129,16 @@ public class MapMaker : MonoBehaviour
                 horEdges[x,y] = r.downOpen()?State.open:State.closed;
                 horEdges[x,y+1] = r.upOpen()?State.open:State.closed;
                 g.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0);
+                if(colliders == null){ colliders = new List<Collider2D>(); }
+                colliders.AddRange(g.GetComponentsInChildren<Collider2D>());
                 makeFurniture(x,y,r, rotations[rand],pos, g);
-                Debug.Log("numenemies = " + numEnemies);
-                Debug.Log("numenemiesplaced = " + numEnemiesPlaced);
                 if(Random.Range(0f, 1f) < (numEnemies - numEnemiesPlaced)*((float)numEnemies/((float)width*height))){
                     numEnemiesPlaced++;
                     makeEnemy(x,y,r,rotations[rand],pos,g);
+                }
+                if(Random.Range(0f,1f) < (3 - numNPCsPlaced)*((float)3/((float)width*height))){
+                    numNPCsPlaced++;
+                    makeNPC(x,y,r,rotations[rand],pos,g);
                 }
                 return g;
             }else{
@@ -141,20 +149,17 @@ public class MapMaker : MonoBehaviour
     private void makeFurniture(int x, int y, Room r, int angle, Vector3 pos, GameObject roomObj){
         r.rotate(angle);
         GameObject item = Instantiate(furniture[Random.Range(0, furniture.Count)]);
-        placedObjects.Add(item);
+        colliders.Add(item.GetComponent<Collider2D>());
         while(true){
-            item.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0) + new Vector3(Random.Range(r.minX(), r.maxX()), Random.Range(r.minY(), r.maxY()));
+             item.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0) + new Vector3(Random.Range(r.minX(), r.maxX()), Random.Range(r.minY(), r.maxY()));
             item.transform.Rotate(new Vector3(0,0,Random.Range(0,360)));
-            List<Collider> colliders = new List<Collider>();
-            colliders.AddRange(roomObj.GetComponentsInChildren<Collider>());
-            for(int i = 0; i < placedObjects.Count; i++){
-                GameObject o = placedObjects[i];
-                if(o != this){ colliders.AddRange(o.GetComponentsInChildren<Collider>());}
-            }
+            Physics.SyncTransforms();
             for(int i = 0; i < colliders.Count; i++){
-                Collider col = colliders[i];
-                if(col.bounds.Intersects(item.GetComponent<Renderer>().bounds)){
-                    continue;
+                Collider2D col = colliders[i];
+                if(col != item.GetComponent<Collider2D>()){
+                    if(col.bounds.Intersects(item.GetComponent<Collider2D>().bounds)){
+                        continue;
+                    }
                 }
             }
             break;
@@ -165,20 +170,37 @@ public class MapMaker : MonoBehaviour
         r.rotate(angle);
         GameObject item = Instantiate(Furniture.Get.Enemy);
         item.GetComponent<Illness>().player = p.transform;
-        placedObjects.Add(item);
+        colliders.Add(item.GetComponent<Collider2D>());
         while(true){
-            item.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0) + new Vector3(Random.Range(r.minX(), r.maxX()), Random.Range(r.minY(), r.maxY()));
+             item.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0) + new Vector3(Random.Range(r.minX(), r.maxX()), Random.Range(r.minY(), r.maxY()));
             item.transform.Rotate(new Vector3(0,0,Random.Range(0,360)));
-            List<Collider> colliders = new List<Collider>();
-            colliders.AddRange(roomObj.GetComponentsInChildren<Collider>());
-            for(int i = 0; i < placedObjects.Count; i++){
-                GameObject o = placedObjects[i];
-                if(o != this){ colliders.AddRange(o.GetComponentsInChildren<Collider>());}
-            }
             for(int i = 0; i < colliders.Count; i++){
-                Collider col = colliders[i];
-                if(col.bounds.Intersects(item.GetComponent<Renderer>().bounds)){
-                    continue;
+                Collider2D col = colliders[i];
+                if(col != item.GetComponent<Collider2D>()){
+                    if(col.bounds.Intersects(item.GetComponent<Collider2D>().bounds)){
+                        continue;
+                    }
+                }
+            }
+            break;
+        }
+    }
+
+    private void makeNPC(int x, int y, Room r, int angle, Vector3 pos, GameObject roomObj){
+        r.rotate(angle);
+        GameObject item = Instantiate(Furniture.Get.NPC);
+        item.GetComponent<Interact>().dialogueManager = this.dialogueManager;
+        item.GetComponent<Interact>().path = (this.numNPCsPlaced-1);
+        colliders.Add(item.GetComponent<Collider2D>());
+        while(true){
+             item.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0) + new Vector3(Random.Range(r.minX(), r.maxX()), Random.Range(r.minY(), r.maxY()));
+            item.transform.Rotate(new Vector3(0,0,Random.Range(0,360)));
+            for(int i = 0; i < colliders.Count; i++){
+                Collider2D col = colliders[i];
+                if(col != item.GetComponent<Collider2D>()){
+                    if(col.bounds.Intersects(item.GetComponent<Collider2D>().bounds)){
+                        continue;
+                    }
                 }
             }
             break;
@@ -195,6 +217,12 @@ protected Vector2 topRight;
 public GameObject prefab;
  public int rotation = 0;
  public void rotate(int degrees){
+    for(int i = 0; i < rotation; i++){
+        botLeft = new Vector2(botLeft.y, -botLeft.x);
+        botRight = new Vector2(botRight.y, -botRight.x);
+        topLeft = new Vector2(topLeft.y, -topLeft.x);
+        topRight = new Vector2(topRight.y, -topRight.x);
+    }
     degrees = (degrees + 360)%360;
     degrees = degrees - 360;
     degrees /= 90;
