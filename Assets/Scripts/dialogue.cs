@@ -16,6 +16,7 @@ public class dialogue : MonoBehaviour
     public GameObject supportImageOne;
     public GameObject supportImageTwo;
     public GameObject supportImageThree;
+    public GameObject supportImageFour;
     public GameObject blockImage;
 
     void Start()
@@ -66,6 +67,10 @@ public class dialogue : MonoBehaviour
         {
             supportImageThree.SetActive(true);
         }
+        else if (path == 3)
+        {
+            supportImageFour.SetActive(true);
+        }
         dialoguePath = path;
         StartCoroutine(Type());
     }
@@ -104,6 +109,7 @@ public class dialogue : MonoBehaviour
             supportImageOne.SetActive(false);
             supportImageTwo.SetActive(false);
             supportImageThree.SetActive(false);
+            supportImageFour.SetActive(true);
             index = 0;
         }
     }
