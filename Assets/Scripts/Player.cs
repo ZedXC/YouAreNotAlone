@@ -10,6 +10,8 @@ public class Player : MonoBehaviour
     private bool moving;
     public GameObject flashLight;
     private InputField input;
+    public GameObject loseScreen;
+    public Animator anim;
 
     // Start is called before the first frame update
     void Start()
@@ -41,11 +43,20 @@ public class Player : MonoBehaviour
         }
     }
 
-    //TODO
     public void gameOver()
     {
+        anim.SetTrigger("Die");
+        playerSpeed = 0f;
         Debug.Log("Game over");
-        Destroy(this.gameObject);
+        loseScreen.SetActive(true);
+    }
+
+    void OnCollisionEnter2D(Collision2D gameObjectInformation)
+    {
+        if (gameObjectInformation.gameObject.tag == "Illness")
+        {
+            gameOver();
+        }
     }
 
     public Vector2 degreeToVector(float degree)

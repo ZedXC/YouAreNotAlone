@@ -99,7 +99,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 4
-      y: 4
+      y: 532
       width: 1369
       height: 193
     spriteID: bf5a4b2c4032bf045a8cc0abb31cf2c5
@@ -111,7 +111,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     parentGroupIndex: -1
-    uvTransform: {x: -272, y: -795}
+    uvTransform: {x: -272, y: -267}
   - name: LOST IN THE DARKNESS White
     originalName: 
     pivot: {x: 0.5, y: 0.5}
@@ -120,7 +120,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 4
-      y: 205
+      y: 733
       width: 1369
       height: 193
     spriteID: 8a10a71bef5fe244884c2827f0615416
@@ -132,7 +132,91 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     parentGroupIndex: -1
-    uvTransform: {x: -272, y: -594}
+    uvTransform: {x: -272, y: -66}
+  - name: Return to titleScreen
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 934
+      width: 1102
+      height: 156
+    spriteID: 9033a49d3153bf14aaf3a26810b02a6f
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    parentGroupIndex: -1
+    uvTransform: {x: -344, y: 934}
+  - name: Yes
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 1381
+      y: 532
+      width: 172
+      height: 167
+    spriteID: 7eebea2fe92156a4991fdafa3ce68a32
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    parentGroupIndex: -1
+    uvTransform: {x: 697, y: -117}
+  - name: No
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 1561
+      y: 532
+      width: 125
+      height: 158
+    spriteID: 7814e1d99099e6a47914995bedd7410e
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    parentGroupIndex: -1
+    uvTransform: {x: 471, y: -107}
+  - name: Death
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 4
+      width: 1330
+      height: 520
+    spriteID: c2c31d35dcd1a454bb0b318d7bd4b7b2
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    parentGroupIndex: -1
+    uvTransform: {x: -291, y: -109}
   characterData:
     bones: []
     parts: []
@@ -169,7 +253,7 @@ ScriptedImporter:
     parentIndex: -1
     spriteID: bf5a4b2c4032bf045a8cc0abb31cf2c5
     layerID: 2
-    mosaicPosition: {x: 4, y: 4}
+    mosaicPosition: {x: 4, y: 532}
     flatten: 0
     isImported: 1
     isVisible: 1
@@ -179,7 +263,47 @@ ScriptedImporter:
     parentIndex: -1
     spriteID: 8a10a71bef5fe244884c2827f0615416
     layerID: 3
-    mosaicPosition: {x: 4, y: 205}
+    mosaicPosition: {x: 4, y: 733}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Return to titleScreen
+    spriteName: Return to titleScreen
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 9033a49d3153bf14aaf3a26810b02a6f
+    layerID: 8
+    mosaicPosition: {x: 4, y: 934}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Yes
+    spriteName: Yes
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 7eebea2fe92156a4991fdafa3ce68a32
+    layerID: 7
+    mosaicPosition: {x: 1381, y: 532}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: No
+    spriteName: No
+    isGroup: 0
+    parentIndex: -1
+    spriteID: 7814e1d99099e6a47914995bedd7410e
+    layerID: 6
+    mosaicPosition: {x: 1561, y: 532}
+    flatten: 0
+    isImported: 1
+    isVisible: 1
+  - name: Death
+    spriteName: Death
+    isGroup: 0
+    parentIndex: -1
+    spriteID: c2c31d35dcd1a454bb0b318d7bd4b7b2
+    layerID: 5
+    mosaicPosition: {x: 4, y: 4}
     flatten: 0
     isImported: 1
     isVisible: 1
