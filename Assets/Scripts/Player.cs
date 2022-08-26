@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Player : MonoBehaviour
-{   
+{
     public float playerSpeed = 10f;
     public Rigidbody2D rb;
     private bool moving;
@@ -15,22 +15,31 @@ public class Player : MonoBehaviour
     void Start()
     {
         MapMaker m = this.gameObject.AddComponent<MapMaker>();
-        m.makeMap(5,5,20, this);
+        m.makeMap(5, 5, 20, this);
     }
 
     // Update is called once per frame
     void Update()
     {
         Vector2 move = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-        rb.velocity = new Vector2(playerSpeed*move.x, playerSpeed*move.y);
-        if(Input.GetKey(KeyCode.Z)){
-            flashLight.transform.RotateAround(this.transform.position, Vector3.forward, 180*Time.deltaTime );
+        rb.velocity = new Vector2(playerSpeed * move.x, playerSpeed * move.y);
+        if (Input.GetKey(KeyCode.Z) || Input.GetKey(KeyCode.J))
+        {
+            flashLight.transform.RotateAround(
+                this.transform.position,
+                Vector3.forward,
+                180 * Time.deltaTime
+            );
         }
-        if(Input.GetKey(KeyCode.C)){
-            flashLight.transform.RotateAround(this.transform.position, Vector3.forward, -180*Time.deltaTime);
+        if (Input.GetKey(KeyCode.C) || Input.GetKey(KeyCode.L))
+        {
+            flashLight.transform.RotateAround(
+                this.transform.position,
+                Vector3.forward,
+                -180 * Time.deltaTime
+            );
         }
     }
-
 
     //TODO
     public void gameOver()
