@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     private InputField input;
     public GameObject loseScreen;
     public Animator anim;
+    private bool isDead = false;
 
     // Start is called before the first frame update
     void Start()
@@ -45,10 +46,15 @@ public class Player : MonoBehaviour
 
     public void gameOver()
     {
-        anim.SetTrigger("Die");
-        playerSpeed = 0f;
-        Debug.Log("Game over");
-        loseScreen.SetActive(true);
+        if (!isDead)
+        {
+            anim.SetTrigger("Die");
+            playerSpeed = 0f;
+            Debug.Log("Game over");
+            loseScreen.SetActive(true);
+            rb.constraints =
+                RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
+        }
     }
 
     void OnCollisionEnter2D(Collision2D gameObjectInformation)

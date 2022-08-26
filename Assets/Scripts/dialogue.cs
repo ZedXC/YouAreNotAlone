@@ -109,7 +109,7 @@ public class dialogue : MonoBehaviour
             supportImageOne.SetActive(false);
             supportImageTwo.SetActive(false);
             supportImageThree.SetActive(false);
-            supportImageFour.SetActive(true);
+            supportImageFour.SetActive(false);
             index = 0;
         }
     }
