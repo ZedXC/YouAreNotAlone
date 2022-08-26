@@ -588,6 +588,18 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7324680117955985022, guid: 710603c462f64dd4b945f51943cbec5e, type: 3}
+      propertyPath: m_Color.b
+      value: 0.17221434
+      objectReference: {fileID: 0}
+    - target: {fileID: 7324680117955985022, guid: 710603c462f64dd4b945f51943cbec5e, type: 3}
+      propertyPath: m_Color.g
+      value: 0.706874
+      objectReference: {fileID: 0}
+    - target: {fileID: 7324680117955985022, guid: 710603c462f64dd4b945f51943cbec5e, type: 3}
+      propertyPath: m_Color.r
+      value: 0.8113208
+      objectReference: {fileID: 0}
+    - target: {fileID: 7324680117955985022, guid: 710603c462f64dd4b945f51943cbec5e, type: 3}
       propertyPath: m_SortingOrder
       value: 6
       objectReference: {fileID: 0}
@@ -1200,7 +1212,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 215323027
-  m_SortingLayer: 1
+  m_SortingLayer: -1
   m_SortingOrder: 1
   m_Sprite: {fileID: -9014845900175333574, guid: 863364bbaf72ed44684177a50d7f19d4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1970,7 +1982,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textDisplay: {fileID: 561744440}
   player: {fileID: 132748992}
-  dialoguePath: 8
   typingSpeed: 0.05
   continueButton: {fileID: 1613396040}
   supportImageOne: {fileID: 1488249914}
