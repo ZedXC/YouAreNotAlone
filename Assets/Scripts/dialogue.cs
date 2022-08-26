@@ -18,6 +18,7 @@ public class dialogue : MonoBehaviour
     public GameObject supportImageThree;
     public GameObject supportImageFour;
     public GameObject blockImage;
+    public bool doneTalking = false;
 
     void Start()
     {
@@ -91,9 +92,9 @@ public class dialogue : MonoBehaviour
         continueButton.SetActive(false);
 
         //if there is more in the prewritten text go to the next part.
+        doneTalking = !(index < dialogueOptions.GetLength(0) - 1&& dialogueOptions[dialoguePath, index + 1] != null);
         if (
-            index < dialogueOptions.GetLength(0) - 1
-            && dialogueOptions[dialoguePath, index + 1] != null
+            !doneTalking
         )
         {
             index++;

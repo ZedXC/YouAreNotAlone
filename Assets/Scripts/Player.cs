@@ -13,12 +13,12 @@ public class Player : MonoBehaviour
     public GameObject loseScreen;
     public Animator anim;
     private bool isDead = false;
+    public int level = 0;
 
     // Start is called before the first frame update
     void Start()
-    {
-        MapMaker m = this.gameObject.AddComponent<MapMaker>();
-        m.makeMap(5, 5, 20, this);
+    {   
+        nextLevel();
     }
 
     // Update is called once per frame
@@ -46,8 +46,7 @@ public class Player : MonoBehaviour
 
     public void gameOver()
     {
-        if (!isDead)
-        {
+        if (!isDead){
             anim.SetTrigger("Die");
             playerSpeed = 0f;
             Debug.Log("Game over");
@@ -68,5 +67,22 @@ public class Player : MonoBehaviour
     public Vector2 degreeToVector(float degree)
     {
         return (Vector2)(Quaternion.Euler(0, 0, degree) * Vector2.right);
+    }
+
+    public void nextLevel(){
+        MapMaker m = this.gameObject.AddComponent<MapMaker>();
+        if(level == 0){
+        m.makeMap(5, 5, 4, 3, this);
+        }else if(level == 1){
+             m.makeMap(10, 10, 15, 3, this);
+        }else if(level == 2){
+             m.makeMap(15, 15, 30, 4, this);
+        }else if(level == 3){
+            win();
+        }
+    }
+
+    private void win(){
+
     }
 }

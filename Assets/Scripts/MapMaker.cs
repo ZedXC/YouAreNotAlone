@@ -15,12 +15,15 @@ public class MapMaker : MonoBehaviour
     private int width;
     private int height;
     private Player p;
+    private int numNPCs;
     private int numNPCsPlaced;
     private GameObject dialogueManager;
-    private List<Collider2D> colliders;
+    private List<GameObject> objects;
+    private List<Interact> NPCs;
 
     void Awake(){
-        List<Collider2D> colliders = new List<Collider2D>();
+        objects = new List<GameObject>();
+        NPCs = new List<Interact>();
         dialogueManager = GameObject.Find("DialogueManager");
         furniture = new List<GameObject>();
         furniture.Add(Furniture.Get.Cabinet);
@@ -35,7 +38,25 @@ public class MapMaker : MonoBehaviour
         furniture.Add(Furniture.Get.Table);
         furniture.Add(Furniture.Get.Wardrobe);
     }
-    public void makeMap(int width, int height, int numMonsters, Player p){
+
+    void Update(){
+        if(NPCs.Count >= 3){
+        for(int i = 0; i < NPCs.Count; i++){
+            if((NPCs[i].interactable && NPCs[i].path != 3) || !NPCs[i].dialogueManager.GetComponent<dialogue>().doneTalking){ return; }
+        }
+        destroyAll();
+        p.nextLevel();
+        Destroy(this);
+        }
+    }
+    private void destroyAll(){
+        for(int i = 0; i < objects.Count; i++){
+            Destroy(objects[i]);
+        }
+    }
+
+    public void makeMap(int width, int height, int numMonsters, int numNPCs, Player p){
+        this.numNPCs = numNPCs;
         this.p = p;
         this.width = width;
         this.height = height;
@@ -129,14 +150,13 @@ public class MapMaker : MonoBehaviour
                 horEdges[x,y] = r.downOpen()?State.open:State.closed;
                 horEdges[x,y+1] = r.upOpen()?State.open:State.closed;
                 g.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0);
-                if(colliders == null){ colliders = new List<Collider2D>(); }
-                colliders.AddRange(g.GetComponentsInChildren<Collider2D>());
+                objects.Add(g);
                 makeFurniture(x,y,r, rotations[rand],pos, g);
                 if(Random.Range(0f, 1f) < (numEnemies - numEnemiesPlaced)*((float)numEnemies/((float)width*height))){
                     numEnemiesPlaced++;
                     makeEnemy(x,y,r,rotations[rand],pos,g);
                 }
-                if(Random.Range(0f,1f) < (3 - numNPCsPlaced)*((float)3/((float)width*height))){
+                if(Random.Range(0f,1f) < (numNPCs - numNPCsPlaced)*((float)numNPCs/((float)width*height))){
                     numNPCsPlaced++;
                     makeNPC(x,y,r,rotations[rand],pos,g);
                 }
@@ -149,16 +169,18 @@ public class MapMaker : MonoBehaviour
     private void makeFurniture(int x, int y, Room r, int angle, Vector3 pos, GameObject roomObj){
         r.rotate(angle);
         GameObject item = Instantiate(furniture[Random.Range(0, furniture.Count)]);
-        colliders.Add(item.GetComponent<Collider2D>());
+        objects.Add(item);
         while(true){
              item.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0) + new Vector3(Random.Range(r.minX(), r.maxX()), Random.Range(r.minY(), r.maxY()));
             item.transform.Rotate(new Vector3(0,0,Random.Range(0,360)));
             Physics.SyncTransforms();
-            for(int i = 0; i < colliders.Count; i++){
-                Collider2D col = colliders[i];
-                if(col != item.GetComponent<Collider2D>()){
-                    if(col.bounds.Intersects(item.GetComponent<Collider2D>().bounds)){
-                        continue;
+            for(int i = 0; i < objects.Count; i++){
+                Collider2D[] col = objects[i].GetComponentsInChildren<Collider2D>();
+                for(int j = 0; j < col.Length; j++){
+                    if(col[j] != item.GetComponent<Collider2D>()){
+                        if(col[j].bounds.Intersects(item.GetComponent<Collider2D>().bounds)){
+                           continue;
+                      }
                     }
                 }
             }
@@ -170,15 +192,18 @@ public class MapMaker : MonoBehaviour
         r.rotate(angle);
         GameObject item = Instantiate(Furniture.Get.Enemy);
         item.GetComponent<Illness>().player = p.transform;
-        colliders.Add(item.GetComponent<Collider2D>());
+        objects.Add(item);
         while(true){
              item.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0) + new Vector3(Random.Range(r.minX(), r.maxX()), Random.Range(r.minY(), r.maxY()));
             item.transform.Rotate(new Vector3(0,0,Random.Range(0,360)));
-            for(int i = 0; i < colliders.Count; i++){
-                Collider2D col = colliders[i];
-                if(col != item.GetComponent<Collider2D>()){
-                    if(col.bounds.Intersects(item.GetComponent<Collider2D>().bounds)){
-                        continue;
+            Physics.SyncTransforms();
+            for(int i = 0; i < objects.Count; i++){
+                Collider2D[] col = objects[i].GetComponentsInChildren<Collider2D>();
+                for(int j = 0; j < col.Length; j++){
+                    if(col[j] != item.GetComponent<Collider2D>()){
+                        if(col[j].bounds.Intersects(item.GetComponent<Collider2D>().bounds)){
+                           continue;
+                      }
                     }
                 }
             }
@@ -191,15 +216,19 @@ public class MapMaker : MonoBehaviour
         GameObject item = Instantiate(Furniture.Get.NPC);
         item.GetComponent<Interact>().dialogueManager = this.dialogueManager;
         item.GetComponent<Interact>().path = (this.numNPCsPlaced-1);
-        colliders.Add(item.GetComponent<Collider2D>());
+                NPCs.Add(item.GetComponent<Interact>());
+        objects.Add(item);
         while(true){
              item.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0) + new Vector3(Random.Range(r.minX(), r.maxX()), Random.Range(r.minY(), r.maxY()));
             item.transform.Rotate(new Vector3(0,0,Random.Range(0,360)));
-            for(int i = 0; i < colliders.Count; i++){
-                Collider2D col = colliders[i];
-                if(col != item.GetComponent<Collider2D>()){
-                    if(col.bounds.Intersects(item.GetComponent<Collider2D>().bounds)){
-                        continue;
+            Physics.SyncTransforms();
+            for(int i = 0; i < objects.Count; i++){
+                Collider2D[] col = objects[i].GetComponentsInChildren<Collider2D>();
+                for(int j = 0; j < col.Length; j++){
+                    if(col[j] != item.GetComponent<Collider2D>()){
+                        if(col[j].bounds.Intersects(item.GetComponent<Collider2D>().bounds)){
+                           continue;
+                      }
                     }
                 }
             }

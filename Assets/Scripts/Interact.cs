@@ -6,7 +6,7 @@ public class Interact : MonoBehaviour
 {
     public GameObject dialogueManager;
     public int path;
-    private bool interactable = true;
+    public bool interactable = true;
     public float sightLength = 8;
     public Animator anim;
 
