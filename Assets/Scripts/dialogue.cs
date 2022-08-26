@@ -36,7 +36,6 @@ public class dialogue : MonoBehaviour
     void Update()
     {
         //checks for if the text display has the full sentence before turning on the continue button
-        Debug.Log("Outside limits");
         if (textDisplay.text == dialogueOptions[dialoguePath,index]) {
             continueButton.SetActive(true);
         }

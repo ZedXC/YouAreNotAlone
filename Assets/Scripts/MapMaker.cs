@@ -12,7 +12,7 @@ public class MapMaker : MonoBehaviour
     private List<GameObject> furniture;
     private List<GameObject> placedFurniture;
 
-    void Start(){
+    void Awake(){
         placedFurniture = new List<GameObject>();
         furniture = new List<GameObject>();
         furniture.Add(Furniture.Get.Cabinet);
@@ -126,18 +126,22 @@ public class MapMaker : MonoBehaviour
         r.rotate(angle);
         GameObject item = Instantiate(furniture[Random.Range(0, furniture.Count)]);
         placedFurniture.Add(item);
-        item.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0);
         while(true){
-            item.transform.position = new Vector3(Random.Range(r.minX(), r.maxX()), Random.Range(r.minY(), r.maxY()));
+            item.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0) + new Vector3(Random.Range(r.minX(), r.maxX()), Random.Range(r.minY(), r.maxY()));
             item.transform.Rotate(new Vector3(0,0,Random.Range(0,360)));
             List<Collider> colliders = new List<Collider>();
             colliders.AddRange(roomObj.GetComponentsInChildren<Collider>());
+            for(int i = 0; i < placedFurniture.Count; i++){
+                GameObject o = placedFurniture[i];
+                if(o != this){ colliders.AddRange(o.GetComponentsInChildren<Collider>());}
+            }
             for(int i = 0; i < colliders.Count; i++){
                 Collider col = colliders[i];
                 if(col.bounds.Intersects(item.GetComponent<Renderer>().bounds)){
                     continue;
                 }
             }
+            break;
         }
     }
 
