@@ -11,9 +11,6 @@ public class MapMaker : MonoBehaviour
     public int roomSize = 12;
 
     public void makeMap(int width, int height, int numMonsters, Player p){
-        Room r = new Room();
-        r.rotate(270);
-        Debug.Log("Rotation = " + r.rotation);
         isMade = new bool[width,height];
         horEdges = new State[width,height+1];
         verEdges = new State[width+1,height];
@@ -32,11 +29,10 @@ public class MapMaker : MonoBehaviour
             }
         }
         horEdges[(width-1)/2, 0] = State.open;
-        Vector3 botLeft = new Vector3(p.transform.position.x, p.transform.position.y, p.transform.position.z);
+        Vector3 botLeft = new Vector3(p.transform.position.x, p.transform.position.y, p.transform.position.z) - new Vector3(((width-1)/2)*roomSize,-roomSize,0);
         GameObject g = Instantiate(Rooms.Instance.startEnd);
         g.transform.Rotate(new Vector3(0,0,180));
-        g.transform.position = p.transform.position + new Vector3(((width-1)/2)*roomSize,-roomSize,0);
-        p.transform.position = p.transform.position + new Vector3(((width-1)/2)*roomSize,-roomSize,0);
+        g.transform.position = p.transform.position;
         List<int> openPathXs = new List<int>();
         List<int> openPathYs = new List<int>();
         openPathXs.Add((width-1)/2);
@@ -53,7 +49,7 @@ public class MapMaker : MonoBehaviour
             if(x < width-1 && !isMade[x+1,y] && verEdges[x+1,y] != State.closed){ openPathXs.Add(x+1); openPathYs.Add(y);}
             if(y >= 1 && !isMade[x,y-1] && horEdges[x,y] != State.closed){ openPathXs.Add(x); openPathYs.Add(y-1);}
             if(y < height-1 && !isMade[x,y+1] && horEdges[x,y+1] != State.closed){ openPathXs.Add(x); openPathYs.Add(y+1);}
-        }
+        } 
     }
 
 //Returns a random room you can enter from below

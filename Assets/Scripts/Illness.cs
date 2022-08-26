@@ -5,8 +5,8 @@ using UnityEngine;
 public class Illness : MonoBehaviour
 {
     public GameObject player;
-    public int sightLength = 8;
-    public int enemySpeed;
+    public float sightLength = 8;
+    public float enemySpeed = 0.5f;
     private Rigidbody2D rb;
     // Start is called before the first frame update
     void Awake()
@@ -19,7 +19,7 @@ public class Illness : MonoBehaviour
     {
         if(Vector3.Distance(this.gameObject.transform.position, player.transform.position) < sightLength){
             Vector3 dir = (player.transform.position - this.gameObject.transform.position).normalized;
-            //rb.velocity = new Vector2(enemySpeed, dir);
+            rb.velocity = new Vector2(enemySpeed*dir.x, enemySpeed*dir.y);
         }
     }
 }

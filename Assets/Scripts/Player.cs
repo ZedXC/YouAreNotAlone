@@ -5,11 +5,9 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {   
-    public float playerSpeed = 500f;
+    public float playerSpeed = 10f;
     public Rigidbody2D rb;
     private bool moving;
-    public float notMovingDrag = 2f;
-    public float movingDrag = 100f;
     public GameObject flashLight;
     private InputField input;
 
@@ -24,9 +22,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         Vector2 move = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-        moving = (move.x != 0 || move.y != 0);
-        rb.AddForce(move * Time.deltaTime * playerSpeed);
-        rb.drag = moving?movingDrag:notMovingDrag;
+        rb.velocity = new Vector2(playerSpeed*move.x, playerSpeed*move.y);
         if(Input.GetKey(KeyCode.Z)){
             flashLight.transform.RotateAround(this.transform.position, Vector3.forward, 180*Time.deltaTime );
         }
