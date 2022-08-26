@@ -18,7 +18,6 @@ public class dialogue : MonoBehaviour
     public GameObject supportImageThree;
     public GameObject supportImageFour;
     public GameObject blockImage;
-    public bool doneTalking = false;
 
     void Start()
     {
@@ -47,7 +46,7 @@ public class dialogue : MonoBehaviour
     void Update()
     {
         //checks for if the text display has the full sentence before turning on the continue button
-        if (textDisplay.text == dialogueOptions[dialoguePath, index])
+        if (dialoguePath != -1 && textDisplay.text == dialogueOptions[dialoguePath, index])
         {
             continueButton.SetActive(true);
         }
@@ -92,9 +91,8 @@ public class dialogue : MonoBehaviour
         continueButton.SetActive(false);
 
         //if there is more in the prewritten text go to the next part.
-        doneTalking = !(index < dialogueOptions.GetLength(0) - 1&& dialogueOptions[dialoguePath, index + 1] != null);
         if (
-            !doneTalking
+            index < dialogueOptions.GetLength(0) - 1&& dialogueOptions[dialoguePath, index + 1] != null
         )
         {
             index++;
@@ -112,6 +110,11 @@ public class dialogue : MonoBehaviour
             supportImageThree.SetActive(false);
             supportImageFour.SetActive(false);
             index = 0;
+            dialoguePath = -1;
         }
+    }
+
+    public bool notTalking(){
+        return dialoguePath == -1;
     }
 }

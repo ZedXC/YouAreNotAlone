@@ -72,7 +72,7 @@ public class Player : MonoBehaviour
     public void nextLevel(){
         MapMaker m = this.gameObject.AddComponent<MapMaker>();
         if(level == 0){
-        m.makeMap(5, 5, 4, 3, this);
+            m.makeMap(3, 1, 0, 3, this);
         }else if(level == 1){
              m.makeMap(10, 10, 15, 3, this);
         }else if(level == 2){
@@ -80,6 +80,7 @@ public class Player : MonoBehaviour
         }else if(level == 3){
             win();
         }
+        level++;
     }
 
     private void win(){

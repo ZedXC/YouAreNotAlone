@@ -42,7 +42,7 @@ public class MapMaker : MonoBehaviour
     void Update(){
         if(NPCs.Count >= 3){
         for(int i = 0; i < NPCs.Count; i++){
-            if((NPCs[i].interactable && NPCs[i].path != 3) || !NPCs[i].dialogueManager.GetComponent<dialogue>().doneTalking){ return; }
+            if((NPCs[i].interactable && NPCs[i].path != 3) || !NPCs[i].dialogueManager.GetComponent<dialogue>().notTalking()){ return; }
         }
         destroyAll();
         p.nextLevel();
@@ -85,6 +85,7 @@ public class MapMaker : MonoBehaviour
         GameObject g = Instantiate(Rooms.Instance.startEnd);
         g.transform.Rotate(new Vector3(0,0,180));
         g.transform.position = p.transform.position;
+        objects.Add(g);
         List<int> openPathXs = new List<int>();
         List<int> openPathYs = new List<int>();
         openPathXs.Add((width-1)/2);
