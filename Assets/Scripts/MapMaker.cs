@@ -113,7 +113,16 @@ public class MapMaker : MonoBehaviour
         if(roomCount < 0.9*width*height){ retry(width, height, numMonsters, numNPCs, p); return; }
 
         //Make furniture, NPCs and enemies
-        int NPCrand = Random.Range(0, width*height);
+        int NPCrand;
+        while(true){
+            NPCrand = Random.Range(0, width*height);
+            for(int i = 0; i < width; i++) for(int j = 0; j < height; j++){
+                if(i+j*width + NPCrand)%((int)roomCount/numNPCs) == 0){
+                    if(!isMade[i,j]){ continue;}
+                }
+            }
+            break;
+        }
         int Enemyrand = Random.Range(0, width*height);
         for(int i = 0; i < width; i++) for(int j = 0; j < height; j++){
             if(rooms[i,j] != null){
