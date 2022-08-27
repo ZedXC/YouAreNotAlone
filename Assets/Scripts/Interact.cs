@@ -7,7 +7,7 @@ public class Interact : MonoBehaviour
     public GameObject dialogueManager;
     public int path;
     public bool interactable = true;
-    public float sightLength = 10;
+    public float sightLength = 13;
     public Animator anim;
     public GameObject audioSource;
     public AudioSource ExplosionAudio;

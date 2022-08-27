@@ -20,6 +20,7 @@ public class Player : MonoBehaviour
     private int spoonsMax;
     public int spoonLength = 8;
     public AudioSource audio;
+    public AudioSource click;
 
     // Start is called before the first frame update
     void Start()
@@ -84,13 +85,13 @@ public class Player : MonoBehaviour
         MapMaker m = this.gameObject.AddComponent<MapMaker>();
         if(level == 0){
             activateSpoons(level);
-            m.makeMap(5, 5, 4, 3, this);
+            m.makeMap(5, 5, 10, 3, this);
         }else if(level == 1){
             activateSpoons(level);
-            m.makeMap(10, 10, 15, 3, this);
+            m.makeMap(7, 7, 20, 3, this);
         }else if(level == 2){
             activateSpoons(level);
-            m.makeMap(15, 15, 30, 4, this);
+            m.makeMap(9, 9, 25, 4, this);
         }else if(level == 3){
             win();
         }
@@ -150,5 +151,10 @@ public class Player : MonoBehaviour
                 spoons[0].SetActive(false);
             }
         }
+    }
+
+    public void findTorch(){
+        click.Play();
+        flashLight.SetActive(true);
     }
 }
