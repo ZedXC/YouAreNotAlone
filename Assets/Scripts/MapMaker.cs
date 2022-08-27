@@ -115,15 +115,15 @@ public class MapMaker : MonoBehaviour
         //Make furniture, NPCs and enemies
         int NPCrand;
         while(true){
-            NPCrand = Random.Range(0, width*height);
+            NPCrand = Random.Range(1, width*height - 1);
             for(int i = 0; i < width; i++) for(int j = 0; j < height; j++){
-                if(i+j*width + NPCrand)%((int)roomCount/numNPCs) == 0){
+                if((i+j*width + NPCrand)%((int)width*height/numNPCs) == 0){
                     if(!isMade[i,j]){ continue;}
                 }
             }
             break;
         }
-        int Enemyrand = Random.Range(0, width*height);
+        int Enemyrand = Random.Range(1, width*height - 1);
         for(int i = 0; i < width; i++) for(int j = 0; j < height; j++){
             if(rooms[i,j] != null){
                 Room r = rooms[i,j];
@@ -131,10 +131,10 @@ public class MapMaker : MonoBehaviour
                 for(int n = 0; n < numFurniture; n++){
                     makeFurniture(i,j,r,botLeft, g);
                 }
-                if((i+j*width + Enemyrand)%((int)roomCount/numEnemies) == 0){
+                if((i+j*width + Enemyrand)%((int)width*height/numEnemies) == 0){
                     makeEnemy(i,j,r,botLeft,g);
                 }
-                if((i+j*width + NPCrand)%((int)roomCount/numNPCs) == 0){
+                if((i+j*width + NPCrand)%((int)width*height/numNPCs) == 0){
                     numNPCsPlaced++; //this is important for the path making
                     makeNPC(i,j,r,botLeft,g); 
                 }
