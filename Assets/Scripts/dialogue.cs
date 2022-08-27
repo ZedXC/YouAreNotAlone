@@ -18,6 +18,7 @@ public class dialogue : MonoBehaviour
     public GameObject supportImageThree;
     public GameObject supportImageFour;
     public GameObject blockImage;
+    public AudioSource talkingSound;
 
     void Start()
     {
@@ -80,6 +81,9 @@ public class dialogue : MonoBehaviour
         //displays each individual letter one by one every given amount of time\
         foreach (char letter in dialogueOptions[dialoguePath, index].ToCharArray())
         {
+            if(letter != ' '){
+                talkingSound.Play();
+            }
             textDisplay.text += letter;
             yield return new WaitForSeconds(typingSpeed);
         }

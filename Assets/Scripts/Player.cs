@@ -16,6 +16,10 @@ public class Player : MonoBehaviour
     private bool isDead = false;
     public int level = 0;
     public bool talking = false;
+    public GameObject[] spoons = new GameObject[3];
+    private int spoonsMax;
+    public int spoonLength = 8;
+    public AudioSource audio;
 
     // Start is called before the first frame update
     void Start()
@@ -41,6 +45,10 @@ public class Player : MonoBehaviour
                 Vector3.forward,
                 -180 * Time.deltaTime
             );
+        }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            useSpoon();
         }
         if(talking){ return; }
          Vector2 move = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
@@ -75,11 +83,14 @@ public class Player : MonoBehaviour
     public void nextLevel(){
         MapMaker m = this.gameObject.AddComponent<MapMaker>();
         if(level == 0){
+            activateSpoons(level);
             m.makeMap(5, 5, 4, 3, this);
         }else if(level == 1){
-             m.makeMap(10, 10, 15, 3, this);
+            activateSpoons(level);
+            m.makeMap(10, 10, 15, 3, this);
         }else if(level == 2){
-             m.makeMap(15, 15, 30, 4, this);
+            activateSpoons(level);
+            m.makeMap(15, 15, 30, 4, this);
         }else if(level == 3){
             win();
         }
@@ -88,5 +99,56 @@ public class Player : MonoBehaviour
 
     private void win(){
         SceneManager.LoadScene("WinScene"); 
+    }
+
+    private void activateSpoons(int lvl){
+        if(lvl == 0){
+            spoonsMax = 1;
+            spoons[0].SetActive(true);
+            spoons[1].SetActive(false);
+            spoons[2].SetActive(false);
+        }
+        if(lvl == 1){
+            spoonsMax = 2;
+            spoons[0].SetActive(true);
+            spoons[1].SetActive(true);
+            spoons[2].SetActive(false);
+        }
+        if(lvl == 2){
+            spoonsMax = 3;
+            spoons[0].SetActive(true);
+            spoons[1].SetActive(true);
+            spoons[2].SetActive(true);
+        }
+    }
+
+    private void useSpoon(){
+        if(spoonsMax > 0){
+            anim.SetTrigger("Burst");
+            audio.Play();
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Illness");
+                for (int i = 0; i < enemies.Length; i++)
+                {
+                    if (
+                        Vector3.Distance(
+                            this.gameObject.transform.position,
+                            enemies[i].GetComponent<Illness>().getPosition()
+                        ) < spoonLength
+                    )
+                    {
+                        Destroy(enemies[i]);
+                    }
+            }
+            spoonsMax--;
+            if(spoons[2].activeSelf == true){
+                spoons[2].SetActive(false);
+            }
+            else if(spoons[1].activeSelf == true){
+                spoons[1].SetActive(false);
+            }
+            else if(spoons[0].activeSelf == true){
+                spoons[0].SetActive(false);
+            }
+        }
     }
 }

@@ -7,8 +7,10 @@ public class Interact : MonoBehaviour
     public GameObject dialogueManager;
     public int path;
     public bool interactable = true;
-    public float sightLength = 8;
+    public float sightLength = 10;
     public Animator anim;
+    public GameObject audioSource;
+    public AudioSource ExplosionAudio;
 
     private void OnTriggerEnter2D(Collider2D gameObjectInformation)
     {
@@ -17,6 +19,7 @@ public class Interact : MonoBehaviour
             if (interactable)
             {
                 Debug.Log("Detected");
+                ExplosionAudio.Play();
                 anim.SetTrigger("Interacted");
                 Player player = GameObject.Find("Player").GetComponent<Player>();
                 player.talking = true;
@@ -37,6 +40,7 @@ public class Interact : MonoBehaviour
                 }
                 dialogueManager.GetComponent<dialogue>().OnActivation(path);
                 interactable = false;
+                audioSource.SetActive(false);
             }
         }
     }
