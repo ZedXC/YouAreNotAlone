@@ -8,10 +8,10 @@ public class MapMaker : MonoBehaviour
     private State[,] horEdges;
     private State[,] verEdges;
     private enum State{ closed=0, unset=1, open=2};
-    public int roomSize = 12;
+    public readonly int roomSize = 12;
     private List<GameObject> furniture;
     private int numEnemies;
-    private int numEnemiesPlaced = 0;
+    private int numEnemiesPlaced;
     private int width;
     private int height;
     private Player p;
@@ -113,6 +113,22 @@ public class MapMaker : MonoBehaviour
             if(isMade[i,j]){ roomCount++;}
         }
         if(roomCount < 0.9*width*height){ retry(width, height, numMonsters, numNPCs, p); return; }
+
+        //Make furniture, NPCs and enemies
+        for(int i = 0; i < width; i++) for(int j = 0; j < height; j++){
+            if(rooms[i,j] != null){
+                Room r = rooms[i,j];
+                makeFurniture(i,j,r,botLeft, g);
+                if(Random.Range(0f, 1f) < (numEnemies - numEnemiesPlaced)*((float)numEnemies/((float)roomCount))){
+                    numEnemiesPlaced++;
+                    makeEnemy(i,j,r,botLeft,g);
+                }
+                if(Random.Range(0f,1f) < (numNPCs - numNPCsPlaced)*((float)numNPCs/((float)roomCount))){
+                    numNPCsPlaced++;
+                    makeNPC(i,j,r,botLeft,g);
+                }
+            }
+        }
     }
 
     private void retry(int width, int height, int numMonsters, int numNPCs, Player p){
@@ -170,23 +186,13 @@ public class MapMaker : MonoBehaviour
                 g.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0);
                 objects.Add(g);
                 rooms[x,y] = r;
-                makeFurniture(x,y,r, rotations[rand],pos, g);
-                if(Random.Range(0f, 1f) < (numEnemies - numEnemiesPlaced)*((float)numEnemies/((float)width*height))){
-                    numEnemiesPlaced++;
-                    makeEnemy(x,y,r,rotations[rand],pos,g);
-                }
-                if(Random.Range(0f,1f) < (numNPCs - numNPCsPlaced)*((float)numNPCs/((float)width*height))){
-                    numNPCsPlaced++;
-                    makeNPC(x,y,r,rotations[rand],pos,g);
-                }
                 return g;
             }else{
                 return null;
             }
     }
 
-    private void makeFurniture(int x, int y, Room r, int angle, Vector3 pos, GameObject roomObj){
-        r.rotate(angle);
+    private void makeFurniture(int x, int y, Room r, Vector3 pos, GameObject roomObj){
         GameObject item = Instantiate(furniture[Random.Range(0, furniture.Count)]);
         objects.Add(item);
         while(true){
@@ -207,8 +213,7 @@ public class MapMaker : MonoBehaviour
         }
     }
 
-    private void makeEnemy(int x, int y, Room r, int angle, Vector3 pos, GameObject roomObj){
-        r.rotate(angle);
+    private void makeEnemy(int x, int y, Room r, Vector3 pos, GameObject roomObj){
         GameObject item = Instantiate(Furniture.Get.Enemy);
         item.GetComponent<Illness>().player = p.transform;
         objects.Add(item);
@@ -230,8 +235,7 @@ public class MapMaker : MonoBehaviour
         }
     }
 
-    private void makeNPC(int x, int y, Room r, int angle, Vector3 pos, GameObject roomObj){
-        r.rotate(angle);
+    private void makeNPC(int x, int y, Room r, Vector3 pos, GameObject roomObj){
         GameObject item = Instantiate(Furniture.Get.NPC);
         item.GetComponent<Interact>().dialogueManager = this.dialogueManager;
         item.GetComponent<Interact>().path = (this.numNPCsPlaced-1);
