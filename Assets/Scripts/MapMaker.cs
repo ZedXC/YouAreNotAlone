@@ -11,7 +11,6 @@ public class MapMaker : MonoBehaviour
     public readonly int roomSize = 12;
     private List<GameObject> furniture;
     private int numEnemies;
-    private int numEnemiesPlaced;
     private int width;
     private int height;
     private Player p;
@@ -63,7 +62,6 @@ public class MapMaker : MonoBehaviour
         this.width = width;
         this.height = height;
         numEnemies = numMonsters;
-        numEnemiesPlaced = 0;
         numNPCsPlaced = 0;
         isMade = new bool[width,height];
         horEdges = new State[width,height+1];
@@ -115,17 +113,21 @@ public class MapMaker : MonoBehaviour
         if(roomCount < 0.9*width*height){ retry(width, height, numMonsters, numNPCs, p); return; }
 
         //Make furniture, NPCs and enemies
+        int NPCrand = Random.Range(0, width*height);
+        int Enemyrand = Random.Range(0, width*height);
         for(int i = 0; i < width; i++) for(int j = 0; j < height; j++){
             if(rooms[i,j] != null){
                 Room r = rooms[i,j];
-                makeFurniture(i,j,r,botLeft, g);
-                if(Random.Range(0f, 1f) < (numEnemies - numEnemiesPlaced)*((float)numEnemies/((float)roomCount))){
-                    numEnemiesPlaced++;
+                int numFurniture = Random.Range(0, 3);
+                for(int n = 0; n < numFurniture; n++){
+                    makeFurniture(i,j,r,botLeft, g);
+                }
+                if((i+j*width + Enemyrand)%((int)roomCount/numEnemies) == 0){
                     makeEnemy(i,j,r,botLeft,g);
                 }
-                if(Random.Range(0f,1f) < (numNPCs - numNPCsPlaced)*((float)numNPCs/((float)roomCount))){
-                    numNPCsPlaced++;
-                    makeNPC(i,j,r,botLeft,g);
+                if((i+j*width + NPCrand)%((int)roomCount/numNPCs) == 0){
+                    numNPCsPlaced++; //this is important for the path making
+                    makeNPC(i,j,r,botLeft,g); 
                 }
             }
         }
