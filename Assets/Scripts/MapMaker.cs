@@ -113,21 +113,22 @@ public class MapMaker : MonoBehaviour
         if(roomCount < 0.9*width*height){ retry(width, height, numMonsters, numNPCs, p); return; }
 
         //Make furniture, NPCs and enemies
-        int NPCrand;
-        while(true){
+        int NPCrand = 1;
+        bool invalidNPCPlacement = true;
+        while(invalidNPCPlacement){
+            invalidNPCPlacement = false;
             NPCrand = Random.Range(1, width*height - 1);
             for(int i = 0; i < width; i++) for(int j = 0; j < height; j++){
                 if((i+j*width + NPCrand)%((int)width*height/numNPCs) == 0){
-                    if(!isMade[i,j]){ continue;}
+                    if(!isMade[i,j]){ invalidNPCPlacement = true;}
                 }
             }
-            break;
         }
         int Enemyrand = Random.Range(1, width*height - 1);
         for(int i = 0; i < width; i++) for(int j = 0; j < height; j++){
             if(rooms[i,j] != null){
                 Room r = rooms[i,j];
-                int numFurniture = Random.Range(0, 3);
+                int numFurniture = Random.Range(0,3);
                 for(int n = 0; n < numFurniture; n++){
                     makeFurniture(i,j,r,botLeft, g);
                 }
@@ -206,68 +207,26 @@ public class MapMaker : MonoBehaviour
     private void makeFurniture(int x, int y, Room r, Vector3 pos, GameObject roomObj){
         GameObject item = Instantiate(furniture[Random.Range(0, furniture.Count)]);
         objects.Add(item);
-        while(true){
-             item.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0) + new Vector3(Random.Range(r.minX(), r.maxX()), Random.Range(r.minY(), r.maxY()));
+            item.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0) + new Vector3(Random.Range(r.minX(), r.maxX())*2, Random.Range(r.minY(), r.maxY())*2);
             item.transform.Rotate(new Vector3(0,0,Random.Range(0,360)));
-            Physics.SyncTransforms();
-            for(int i = 0; i < objects.Count; i++){
-                Collider2D[] col = objects[i].GetComponentsInChildren<Collider2D>();
-                for(int j = 0; j < col.Length; j++){
-                    if(col[j] != item.GetComponent<Collider2D>()){
-                        if(col[j].bounds.Intersects(item.GetComponent<Collider2D>().bounds)){
-                           continue;
-                      }
-                    }
-                }
-            }
-            break;
-        }
     }
 
     private void makeEnemy(int x, int y, Room r, Vector3 pos, GameObject roomObj){
         GameObject item = Instantiate(Furniture.Get.Enemy);
         item.GetComponent<Illness>().player = p.transform;
         objects.Add(item);
-        while(true){
-             item.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0) + new Vector3(Random.Range(r.minX(), r.maxX()), Random.Range(r.minY(), r.maxY()));
-            item.transform.Rotate(new Vector3(0,0,Random.Range(0,360)));
-            Physics.SyncTransforms();
-            for(int i = 0; i < objects.Count; i++){
-                Collider2D[] col = objects[i].GetComponentsInChildren<Collider2D>();
-                for(int j = 0; j < col.Length; j++){
-                    if(col[j] != item.GetComponent<Collider2D>()){
-                        if(col[j].bounds.Intersects(item.GetComponent<Collider2D>().bounds)){
-                           continue;
-                      }
-                    }
-                }
-            }
-            break;
-        }
+        item.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0) + new Vector3(Random.Range(r.minX(), r.maxX())*2, Random.Range(r.minY(), r.maxY())*2);
+        item.transform.Rotate(new Vector3(0,0,Random.Range(0,360)));
     }
 
     private void makeNPC(int x, int y, Room r, Vector3 pos, GameObject roomObj){
         GameObject item = Instantiate(Furniture.Get.NPC);
         item.GetComponent<Interact>().dialogueManager = this.dialogueManager;
         item.GetComponent<Interact>().path = (this.numNPCsPlaced-1);
-                NPCs.Add(item.GetComponent<Interact>());
+        NPCs.Add(item.GetComponent<Interact>());
         objects.Add(item);
-        while(true){
-             item.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0) + new Vector3(Random.Range(r.minX(), r.maxX()), Random.Range(r.minY(), r.maxY()));
-            item.transform.Rotate(new Vector3(0,0,Random.Range(0,360)));
-            Physics.SyncTransforms();
-            for(int i = 0; i < objects.Count; i++){
-                Collider2D[] col = objects[i].GetComponentsInChildren<Collider2D>();
-                for(int j = 0; j < col.Length; j++){
-                    if(col[j] != item.GetComponent<Collider2D>()){
-                        if(col[j].bounds.Intersects(item.GetComponent<Collider2D>().bounds)){
-                           continue;
-                      }
-                    }
-                }
-            }
-            break;
-        }
+        item.transform.position = pos + new Vector3(roomSize*x, roomSize*y,0) + new Vector3(((r.minX() + r.maxX())/2)*roomSize/4, ((r.minY() + r.maxY())/2)*roomSize/4);
+        item.transform.Rotate(new Vector3(0,0,Random.Range(0,360)));
     }
 
     class Room{
