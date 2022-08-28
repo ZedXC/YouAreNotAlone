@@ -7,10 +7,11 @@ public class Interact : MonoBehaviour
     public GameObject dialogueManager;
     public int path;
     public bool interactable = true;
-    public float sightLength = 13;
+    public float sightLength = 10;
     public Animator anim;
     public GameObject audioSource;
     public AudioSource ExplosionAudio;
+    public GameObject player;
 
     private void OnTriggerEnter2D(Collider2D gameObjectInformation)
     {
@@ -30,7 +31,7 @@ public class Interact : MonoBehaviour
                 {
                     if (
                         Vector3.Distance(
-                            this.gameObject.transform.position,
+                            player.transform.position,
                             enemies[i].GetComponent<Illness>().getPosition()
                         ) < sightLength
                     )

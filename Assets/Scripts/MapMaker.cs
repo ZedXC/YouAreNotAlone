@@ -49,6 +49,11 @@ public class MapMaker : MonoBehaviour
         Destroy(this);
         }
     }
+    public void destroyMap(){
+        destroyAll();
+        Destroy(this);
+    }
+
     private void destroyAll(){
         for(int i = 0; i < objects.Count; i++){
             Destroy(objects[i]);

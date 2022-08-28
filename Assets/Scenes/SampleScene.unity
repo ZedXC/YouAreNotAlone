@@ -7071,7 +7071,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: NEXT
+  m_text: ENTER
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d85c873726c09434b99cc712fe7a1919, type: 2}
   m_sharedMaterial: {fileID: 7620248379182676579, guid: d85c873726c09434b99cc712fe7a1919, type: 2}
@@ -7762,9 +7762,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 215813209}
-        m_TargetAssemblyTypeName: GameStateManager, Assembly-CSharp
-        m_MethodName: reload
+      - m_Target: {fileID: 132749000}
+        m_TargetAssemblyTypeName: Player, Assembly-CSharp
+        m_MethodName: resetGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

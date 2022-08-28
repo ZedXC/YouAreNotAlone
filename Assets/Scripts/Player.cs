@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
+    private float playerSpeedBase;
     public float playerSpeed = 10f;
     public Rigidbody2D rb;
     private bool moving;
@@ -21,10 +22,12 @@ public class Player : MonoBehaviour
     public int spoonLength = 8;
     public AudioSource audio;
     public AudioSource click;
+    private MapMaker m;
 
     // Start is called before the first frame update
     void Start()
     {   
+        playerSpeedBase = playerSpeed;
         nextLevel();
     }
 
@@ -64,14 +67,27 @@ public class Player : MonoBehaviour
             Debug.Log("Game over");
             loseScreen.SetActive(true);
             rb.constraints =
-                RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
+                RigidbodyConstraints2D.FreezeAll;
         }
+    }
+
+    public void resetGame()
+    {
+        playerSpeed = playerSpeedBase;
+        rb.constraints =
+                RigidbodyConstraints2D.FreezeRotation;
+        anim.SetTrigger("ResetGame");
+        loseScreen.SetActive(false);
+        level = level-1;
+        m.destroyMap();
+        nextLevel();
     }
 
     void OnCollisionEnter2D(Collision2D gameObjectInformation)
     {
         if (gameObjectInformation.gameObject.tag == "Illness")
         {
+            gameObjectInformation.gameObject.GetComponent<Illness>().onPlayerDeath();
             gameOver();
         }
     }
@@ -82,16 +98,16 @@ public class Player : MonoBehaviour
     }
 
     public void nextLevel(){
-        MapMaker m = this.gameObject.AddComponent<MapMaker>();
+        this.m = this.gameObject.AddComponent<MapMaker>();
         if(level == 0){
             activateSpoons(level);
-            m.makeMap(5, 5, 10, 3, this);
+            m.makeMap(4, 4, 4, 3, this);
         }else if(level == 1){
             activateSpoons(level);
-            m.makeMap(7, 7, 20, 3, this);
+            m.makeMap(5, 5, 5, 3, this);
         }else if(level == 2){
             activateSpoons(level);
-            m.makeMap(9, 9, 25, 4, this);
+            m.makeMap(6, 6, 7, 4, this);
         }else if(level == 3){
             win();
         }

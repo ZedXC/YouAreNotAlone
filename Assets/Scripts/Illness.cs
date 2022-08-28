@@ -8,6 +8,7 @@ public class Illness : MonoBehaviour
     public float sightLength = 8;
     public float enemySpeed = 3f;
     private Rigidbody2D rb;
+    public Animator anim;
 
     // Start is called before the first frame update
     void Awake()
@@ -44,5 +45,9 @@ public class Illness : MonoBehaviour
     public Vector3 getPosition()
     {
         return this.gameObject.transform.position;
+    }
+
+    public void onPlayerDeath(){
+        anim.SetTrigger("PlayerDead");
     }
 }
